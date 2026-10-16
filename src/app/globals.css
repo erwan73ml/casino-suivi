@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --color-or: #d4af37;
+  --color-or-clair: #f3d77a;
+  --color-or-fonce: #9a7b1c;
+  --color-feutre: #0d4a30;
+  --color-gain: #22c55e;
+  --color-perte: #ef4444;
+  --color-noir: #08080a;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  background: #08080a;
+  color: #f4efe1;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Décor : roulette en fond, voilée pour garder les chiffres lisibles. */
+.decor {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(13, 74, 48, 0.55), transparent 60%),
+    radial-gradient(ellipse at 100% 100%, rgba(140, 16, 28, 0.25), transparent 55%),
+    #08080a;
+}
+.decor .roulette {
+  position: absolute;
+  width: min(120vmin, 1100px);
+  aspect-ratio: 1;
+  right: -28vmin;
+  top: 50%;
+  margin-top: max(-60vmin, -550px);
+  background: url("/roulette.svg") center / contain no-repeat;
+  opacity: 0.16;
+  filter: blur(1px) saturate(0.9);
+  animation: tourne 240s linear infinite;
+}
+.decor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 40%, rgba(8, 8, 10, 0.35), rgba(8, 8, 10, 0.85) 75%);
+}
+@media (max-width: 640px) {
+  .decor .roulette { right: -45vmin; opacity: 0.12; }
+}
+@keyframes tourne {
+  to { transform: rotate(360deg); }
+}
+
+@layer components {
+  .panneau {
+    @apply rounded-2xl border border-white/10 bg-[#111114]/80 p-5 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.8)] backdrop-blur-md;
+  }
+  .panneau-or {
+    @apply border-or/30;
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.08) inset, 0 10px 40px -15px rgba(0, 0, 0, 0.8);
+  }
+  .titre {
+    @apply font-display text-or-clair;
+  }
+  .titre-carte {
+    @apply text-xs font-semibold tracking-[0.18em] text-or/80 uppercase;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-[#f4efe1] transition hover:border-or/50 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-or disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-or {
+    @apply border-or bg-gradient-to-b from-or-clair to-or font-semibold text-noir hover:from-[#f8e39a] hover:to-or-clair;
+  }
+  .btn-gain {
+    @apply border-emerald-500/70 bg-gradient-to-b from-emerald-500 to-emerald-700 font-semibold text-white shadow-[0_0_24px_-6px_rgba(34,197,94,0.7)] hover:from-emerald-400 hover:to-emerald-600;
+  }
+  .btn-perte {
+    @apply border-red-500/70 bg-gradient-to-b from-red-500 to-red-800 font-semibold text-white shadow-[0_0_24px_-6px_rgba(239,68,68,0.7)] hover:from-red-400 hover:to-red-700;
+  }
+  .btn-danger {
+    @apply border-red-600 bg-red-700 text-white hover:bg-red-600;
+  }
+  .btn-ghost {
+    @apply border-transparent bg-transparent hover:bg-white/10;
+  }
+  .btn-sm {
+    @apply px-2.5 py-1.5 text-xs;
+  }
+  .champ {
+    @apply w-full rounded-xl border border-white/15 bg-black/40 px-3 py-2.5 text-sm text-[#f4efe1] placeholder:text-white/30 focus:border-or focus:ring-2 focus:ring-or/30 focus:outline-none;
+  }
+  .champ-erreur {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500/30;
+  }
+  .etiquette {
+    @apply mb-1.5 block text-xs font-medium tracking-wide text-white/60;
+  }
+  .discret {
+    @apply text-white/55;
+  }
+  .pastille {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+}
+
+.chiffres {
+  font-variant-numeric: tabular-nums;
+}
+.pos { color: #4ade80; }
+.neg { color: #f87171; }
+.nul { color: #e7dfc6; }
+.lueur-pos { text-shadow: 0 0 24px rgba(74, 222, 128, 0.35); }
+.lueur-neg { text-shadow: 0 0 24px rgba(248, 113, 113, 0.35); }
+
+@keyframes apparait {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.apparait {
+  animation: apparait 0.35s ease-out both;
+}
+@keyframes reflet {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+.lisere {
+  background: linear-gradient(90deg, transparent, rgba(243, 215, 122, 0.9), transparent);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: reflet 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decor .roulette, .apparait, .lisere { animation: none; }
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.85) sepia(0.6) saturate(3) hue-rotate(5deg);
+  cursor: pointer;
+}
+select option {
+  background: #111114;
+}
